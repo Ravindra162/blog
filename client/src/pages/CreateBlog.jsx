@@ -47,7 +47,7 @@
                 .then(response => {
                     console.log(response.data.message);
                     alert(response.data.message)
-                    window.location.href="/"
+                    // window.location.href="/"
                 })
                 .catch(err => console.log(err));
         };

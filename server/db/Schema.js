@@ -41,14 +41,12 @@ CREATE TABLE Comments (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `
-const upVotes = `
+const upvotes = `
 CREATE TABLE upvotes (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    blog_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_upvote UNIQUE (user_id, blog_id)
-);
+    user_id INT REFERENCES users(user_id),
+    blog_id INT REFERENCES posts(post_id),
+    PRIMARY KEY (user_id, blog_id)
+  );
 `
 const  downvotes = `
 CREATE TABLE downvotes (
@@ -58,5 +56,4 @@ CREATE TABLE downvotes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT unique_downvote UNIQUE (user_id, blog_id)
 );
-
 `

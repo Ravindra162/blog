@@ -20,6 +20,14 @@ const upload = multer({ storage: storage });
 // route for fetching all blogs present in db except current user
 router.get('/get', authMiddleware, async (req, res) => {
    console.log('blog '+req.user)
+   const getResponse = await client.query(`
+   SELECT ps.*, COUNT(dv.blog_id) AS downvotes 
+FROM posts ps
+INNER JOIN downvotes dv ON ps.post_id = dv.blog_id
+WHERE ps.user_id <> $1
+GROUP BY ps.post_id, ps.content;
+   `,[req.user])
+   console.log(getResponse)
         
 });
 
@@ -40,13 +48,17 @@ router.post('/create',authMiddleware, upload.single('image'), async function (re
     // CURRENT_TIMESTAMP
 
     const createPost = `
-    INSERT INTO Posts (title, content, user_id, created_at, updated_at, image, upvotes, downvotes, category)
-            VALUES ($1,$2,$3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,$4,$5,$6,$7)
+    INSERT INTO Posts (title, content, user_id, image, category)
+            VALUES ($1,$2,$3,$4,$5)
             RETURNING post_id;
     `
-    const uploadedResult = await client.query(createPost,[title,description,user_id,image,0,0,category])
-    console.log(uploadedResult)
-    if(uploadedResult.rows.length){
+    const uploadedResult = await client.query(createPost,[title,description,user_id,image,category])
+    console.log(uploadedResult.rows)
+    const insertIntoUpvote = `
+    INSERT INTO upvotes (user_id,blog_id) values ($1,$2) returning *
+    `
+    const insertIntoUpvoteResponse = await client.query(insertIntoUpvote,[req.user,uploadedResult.rows[0].post_id])
+    if(insertIntoUpvoteResponse.rows.length){
         return res.json({
             message:"Blog successfully uploaded"
         })
