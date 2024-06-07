@@ -29,10 +29,18 @@ export default function App() {
     }
     
   }
+  const signUpOrProfile = () =>{
+    if(login){
+      window.location.href='/profile'
+    }
+    else window.location.href='/register'
+  }
   return (
     <Navbar>
       <NavbarBrand>
-        <p className="text-2xl font-bold text-inherit">Bloog</p>
+        <p className="text-2xl font-bold text-inherit cursor-pointer"
+        onClick={()=>window.location.href='/'}
+        >Bloog</p>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
@@ -56,7 +64,9 @@ export default function App() {
           <Button onClick={logoutORlogin}>{login===true?"logout":"Login"}</Button>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
+          <Button 
+          onClick={signUpOrProfile}
+          as={Link} color="primary" href="#" variant="flat">
             {login===true?user.username:"Sign Up"}
           </Button>
         </NavbarItem>

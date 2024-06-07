@@ -1,8 +1,8 @@
 const {Client} = require('pg');
-
+require('dotenv').config()
+const connectionString = process.env.DB_CONNECTION_STRING
 const client = new Client({
-    connectionString:"postgresql://blog_owner:MVgflesc17JT@ep-shiny-bush-a192pbbq.ap-southeast-1.aws.neon.tech/blog?sslmode=require"
-})
+    connectionString:process.env.DB_CONNECTION_STRING})
 
 client.on("connect",()=>{
     console.log("Database connected")

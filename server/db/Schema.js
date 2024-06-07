@@ -57,3 +57,11 @@ CREATE TABLE downvotes (
     CONSTRAINT unique_downvote UNIQUE (user_id, blog_id)
 );
 `
+const follows = `
+CREATE TABLE follows (
+    follower_id INT NOT NULL REFERENCES users(user_id),
+    followed_id INT NOT NULL REFERENCES users(user_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (follower_id, followed_id)
+);
+`

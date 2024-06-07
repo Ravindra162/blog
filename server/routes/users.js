@@ -70,14 +70,78 @@ router.post('/login', async function(req,res,next){
       })
     
 })
+//get username and email
 router.get('/get',authMiddleware,async function(req,res,next){
   console.log("get Details")
   const user_id = req.user
-  const findUser = ` SELECT username,profile_image FROM users where user_id =$1`
+  const findUser = ` SELECT username,email,profile_image FROM users where user_id =$1`
   const findUserResponse = await client.query(findUser,[user_id])
   res.json({
     "userDetails":findUserResponse.rows[0]
   })
 })
+//get userBlogs and Voted-blogs
+router.get('/profile', authMiddleware, async function( req, res){
+  const userId = req.user
+  const userBlogs = `
+  SELECT * from posts where user_id = $1
+  `
+  const userBlogsResponse = await client.query(userBlogs,[userId])
+  const allUserBlogs = userBlogsResponse.rows
+  const votedUserBlogs = `SELECT blog_id from upvotes WHERE user_id = $1`
+  const votedUserBlogsResponse = await client.query(votedUserBlogs,[userId])
+  let allVotedUserBlogs = []
+  for(var i=0;i<votedUserBlogsResponse.rows.length;i++){
+    const blogDetails  = await client.query( `SELECT * from posts where post_id=$1`,[votedUserBlogsResponse.rows[i].blog_id])
+    allVotedUserBlogs.push(blogDetails.rows[0])
+  }
+  res.json({
+    userBlogs:allUserBlogs,
+    votedUserBlogs:allVotedUserBlogs
+  })
+
+
+})
+// follow or unfollow user
+router.post('/follow', authMiddleware, async (req, res) => {
+  const followerId = req.user;
+  const followedId = req.body.followedId; 
+  try {
+    // Check if the user is already following other one
+    const isFollowingQuery = `
+      SELECT * FROM follows WHERE follower_id = $1 AND followed_id = $2
+    `;
+    const isFollowedResponse = await client.query(isFollowingQuery, [followerId, followedId]);
+
+    if (isFollowedResponse.rows.length) {
+      // Unfollow
+      const unFollowQuery = `
+        DELETE FROM follows WHERE follower_id = $1 AND followed_id = $2 RETURNING follower_id
+      `;
+      const unFollowResponse = await client.query(unFollowQuery, [followerId, followedId]);
+
+      if (unFollowResponse.rows.length) {
+        return res.json({ message: 'Unfollowed' });
+      } else {
+        return res.status(500).json({ error: 'Failed to unfollow' });
+      }
+    } else {
+      // Follow
+      const followQuery = `
+        INSERT INTO follows (follower_id, followed_id) VALUES ($1, $2) RETURNING followed_id
+      `;
+      const followResponse = await client.query(followQuery, [followerId, followedId]);
+
+      if (followResponse.rows.length) {
+        return res.json({ message: 'Followed' });
+      } else {
+        return res.status(500).json({ error: 'Failed to follow' });
+      }
+    }
+  } catch (err) {
+    console.error('Error in follow/unfollow operation:', err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 module.exports = router;

@@ -21,13 +21,15 @@ const upload = multer({ storage: storage });
 router.get('/get', authMiddleware, async (req, res) => {
    console.log('blog '+req.user)
    const getResponse = await client.query(`
-   SELECT ps.*, COUNT(dv.blog_id) AS downvotes 
-FROM posts ps
-INNER JOIN downvotes dv ON ps.post_id = dv.blog_id
-WHERE ps.user_id <> $1
-GROUP BY ps.post_id, ps.content;
+   SELECT ps.*,us.username
+   FROM posts ps JOIN users us
+   on us.user_id=ps.user_id
+   WHERE ps.user_id <> $1
    `,[req.user])
-   console.log(getResponse)
+   console.log(getResponse.rows)
+   res.json({
+    blogs:getResponse.rows
+   })
         
 });
 
@@ -68,33 +70,58 @@ router.post('/create',authMiddleware, upload.single('image'), async function (re
     })
    
 });
+// get count of upVotes for each blog
+router.get('/getUpVotes',authMiddleware,async function(req,res){
+    const {blogId} = req.query
+    const userId = req.user
+    console.log(blogId)
+    let isVotedByUser
+    const getUpVotes = `
+    SELECT count(*) AS upvotes FROM upvotes WHERE blog_id = $1
+    `
+    const isVoted = ` SELECT * FROM upvotes WHERE blog_id=$1 and user_id=$2`
+    const isVotedResponse = await client.query(isVoted,[blogId,userId])
+    const numberOfUpvotes = await client.query(getUpVotes,[blogId])
+    if(isVotedResponse.rows.length) isVotedByUser = true
+    else isVotedByUser = false
+    res.json({
+        count:numberOfUpvotes.rows[0].upvotes,
+        isVoted:isVotedByUser
+    })
+})
 
-router.put('/upvote', authMiddleware, async (req, res) => {
-    const userId = req.user.id; // Assuming `req.user` contains authenticated user details
-    const { blogId } = req.body; // Assuming `blogId` is sent in the request body
-
-    if (!blogId) {
-        return res.status(400).json({ error: 'Blog ID is required' });
+// upvote and unvote route
+router.post('/upvote',authMiddleware,async function(req,res){
+    const {blogId} = req.body
+    const userId = req.user
+    // check if user already voted for it
+    const checkVote = `
+    SELECT * FROM upvotes where blog_id=$1 and user_id=$2
+    `
+    const isVotedResponse = await client.query(checkVote,[blogId,userId])
+    console.log(isVotedResponse.rows)
+    if(isVotedResponse.rows.length){
+        console.log('Already voted')
+        const unVote = `DELETE FROM upvotes WHERE blog_id=$1 and user_id=$2 returning blog_id`
+        const unVoteResponse = await client.query(unVote,[blogId,userId])
+        console.log(unVoteResponse.rows)
+        res.json({
+            isVoted:false
+        })
     }
-
-    try {
-        // Check if the user has already upvoted this blog post
-        const checkUpvoteQuery = 'SELECT * FROM upvotes WHERE user_id = $1 AND blog_id = $2';
-        const checkUpvoteResult = await pool.query(checkUpvoteQuery, [userId, blogId]);
-
-        if (checkUpvoteResult.rows.length > 0) {
-            return res.status(400).json({ error: 'You have already upvoted this post' });
+    else {
+        console.log('voting....')
+        const upVote = `
+        INSERT INTO upvotes (blog_id,user_id) values ($1,$2) returning blog_id
+        `
+        const upVoteResult = await client.query(upVote,[blogId,userId])
+        console.log(upVoteResult)
+        if(upVoteResult.rows.length){
+            res.json({
+                isVoted:true
+            })
         }
-
-        // Insert the upvote into the upvotes table
-        const upvoteQuery = 'INSERT INTO upvotes (user_id, blog_id) VALUES ($1, $2)';
-        await pool.query(upvoteQuery, [userId, blogId]);
-
-        res.status(200).json({ message: 'Upvote recorded successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'An error occurred while recording the upvote' });
     }
-});
+})
 
 module.exports = router;

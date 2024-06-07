@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
-import Like from './Like'
+import Upvote from './Upvote'
 
-const Post = ({username,image,title,upvotes,downvotes}) => {
-  const [currentUpvotes,setCurrentUpvotes] = useState(upvotes)
-  const [currentDownvotes,setCurrentDownvotes] = useState(downvotes)
+const Post = ({blogId,username,image,title}) => {
   return (
     <div className='h-[340px] w-[1/2] bg-blue-300 m-5 flex flex-col'>
         <div className='h-[15%] w-full flex justify-between bg-yellow-100'>
@@ -19,12 +17,7 @@ const Post = ({username,image,title,upvotes,downvotes}) => {
             </div>
         </div>
         <div className='h-[15%] w-full flex justify-between'>
-            <div className='upvote'
-            onClick={()=>{
-                set
-            }}
-            >upvote: {currentUpvotes}</div>
-            <div className='downvote'>downvote: {currentDownvotes}</div>
+            <Upvote blogId={blogId}/>
         </div>
     </div>
   )
