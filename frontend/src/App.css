@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Orelega+One&display=swap');
+
+#hero-container {
+    background-image: url("./assets/gradiwnt.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  body {
+    font-family: 'Orelega One', sans-serif;
+  }
+  @keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.rotate-animation {
+    animation: rotate 10s linear infinite;
+}
+  
