@@ -64,7 +64,7 @@ const CreateBlog = () => {
                 localStorage.removeItem('writing')
                 // window.location.href="/"
             })
-            .catch(err => console.log(err));
+            .catch(err => alert(err.response.data.message));
     };
     
     return (

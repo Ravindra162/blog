@@ -8,7 +8,7 @@ const Login = () => {
     const [userDetails,setUserDetails] = useState('anonymus')
     const [password,setPassword] = useState('anonymous@123')
     const loginHandler = () =>{
-            axios.post('http://localhost:3000/users/login',{userDetails,password})
+            axios.post('https://blog-l9ra.onrender.com/users/login',{userDetails,password})
             .then(response=>{
                 if(response.data.message==='login successfull'){
                     alert("login successful")
@@ -21,6 +21,8 @@ const Login = () => {
                 else{
                     alert("Error occured")
                 }
+            }).catch(err=>{
+                alert(err.response.data.message)
             })
     }
   return (

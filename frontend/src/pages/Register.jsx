@@ -8,7 +8,7 @@ const Register = () => {
     const [password,setPassword] = useState('anonymous@123')
     const registerHandler = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:3000/users/register',{username,email,password})
+        axios.post('https://blog-l9ra.onrender.com/users/register',{username,email,password})
         .then(response=>{
             if(response.data.message==='User created successfully'){
                  alert("Registered successfully")

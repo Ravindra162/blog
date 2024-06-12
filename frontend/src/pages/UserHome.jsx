@@ -11,7 +11,7 @@ const UserHome = () => {
   const [blogs,setBlogs] = useState([])
   const [isLoading,setIsLoading] = useState(true)
   useEffect(()=>{
-    axios.get(`http://localhost:3000/blog/search?authorOrTitle=${authorOrTitle}`,{
+    axios.get(`https://blog-l9ra.onrender.com/blog/search?authorOrTitle=${authorOrTitle}`,{
       headers:{
         'Authorization':localStorage.getItem('token')
       }
