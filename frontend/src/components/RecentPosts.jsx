@@ -35,7 +35,7 @@ const RecentPosts = () => {
                     <p className='text-white text-xl'>{recentBlogs.length?recentBlogs[0]["title"]:''}</p>
 
                 </div>
-                <div className='h-full md:w-[40%] flex flex-col  p-5 justify-between'>
+                <div className='h-full md:w-[40%] flex flex-col  p-5 justify-center gap-10'>
                     {/* small post div */}
                     {
                         recentBlogs.slice(1).map((elem,index)=>(

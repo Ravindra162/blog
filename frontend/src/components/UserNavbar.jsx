@@ -32,7 +32,7 @@ const UserNavbar = () => {
     <div className=' h-[70px] w-full bg-black md:flex flex md:justify-center justify-between items-center md:items-center md:gap-[10%] p-1'>
       <img 
       onClick={()=>navigate('/user')}
-      className='h-full' src={blogger} alt="blogger" /> {/* Use image */}
+      className='h-full cursor-pointer' src={blogger} alt="blogger" /> {/* Use image */}
       <div className='hidden md:flex h-[70px] w-2/5 ml-10 justify-center items-center gap-10 p-5'>
         <button 
         onClick={()=>{
@@ -86,11 +86,15 @@ const UserNavbar = () => {
           className='text-2xl font-extralight text-white my-2 hover:text-black hover:bg-white px-2 py-1 rounded-md transition duration-450 ease-in-out hover:ease-in'>
             Home
           </button>
-          <button className='text-2xl font-bold text-white my-2 hover:text-black hover:bg-white px-2 py-1 rounded-md transition duration-450 ease-in-out hover:ease-in'>
+          <button
+          onClick={()=>navigate('/user/profile')}
+          className='text-2xl font-bold text-white my-2 hover:text-black hover:bg-white px-2 py-1 rounded-md transition duration-450 ease-in-out hover:ease-in'>
           {user.username}
           </button>
-          <button className='text-2xl font-bold text-white my-2 hover:text-black hover:bg-white px-2 py-1 rounded-md transition duration-450 ease-in-out hover:ease-in'>
-           Contact
+          <button
+          onClick={()=>navigate('/write')}
+          className='text-2xl font-bold text-white my-2 hover:text-black hover:bg-white px-2 py-1 rounded-md transition duration-450 ease-in-out hover:ease-in'>
+           Write blog
           </button>
           <button
           onClick={()=>{
