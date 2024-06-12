@@ -6,6 +6,18 @@
     background-position: center;
     background-repeat: no-repeat;
   }
+.user-container{
+  background-image: url("./assets/userBackground.png");
+  background-size:cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+#recent-post{
+  background-image: url("./assets/userBackground.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
   body {
     font-family: 'Orelega One', sans-serif;
   }
@@ -21,4 +33,14 @@
 .rotate-animation {
     animation: rotate 25s linear infinite;
 }
+*::-webkit-scrollbar {
+  display: none;
+}
+
+
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
   

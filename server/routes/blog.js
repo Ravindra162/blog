@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const fs = require('fs')
 const path = require('path');
 const {client} = require('../db/db');
 const { authMiddleware } = require('../middlewares/auth');
@@ -70,6 +71,42 @@ router.post('/create',authMiddleware, upload.single('image'), async function (re
     })
    
 });
+
+router.put('/update/:blogId',authMiddleware,upload.single('image'),async(req,res)=>{
+    const blogId = req.query.blogId
+    const userId = req.user
+    const image = req.file.filename;
+    const title = req.body.title;
+    const description = req.body.description;
+    const user_id = req.user;
+    const category = req.body.category
+    console.log(req.file)
+    console.log(blogId)
+    console.log(image)
+    console.log(title)
+    console.log(description)
+    console.log(user_id)
+    console.log(category)
+    // CURRENT_TIMESTAMP
+    const post = await client.query(
+        `SELECT * FROM posts WHERE post_id=$1 AND user_id=$2`,
+        [blogId, userId]
+    );
+
+    if (post.rows.length === 0) {
+        return res.status(404).json({ message: "Post not found or you don't have permission to edit it." });
+    }
+    const updatePost =` UPDATE Posts 
+    SET title = $1, content = $2, image = $3, category = $4
+    WHERE post_id = $5 RETURNING post_id`
+    const updatePostResponse = await client.query(updatePost,[title,description,image,category,blogId])
+    console.log(updatePostResponse)
+    if(updatePostResponse.rows.length){
+        res.json({
+            message:"Update successfull"
+        })
+    }
+})
 // get count of upVotes for each blog
 router.get('/getUpVotes',authMiddleware,async function(req,res){
     const {blogId} = req.query
@@ -122,6 +159,94 @@ router.post('/upvote',authMiddleware,async function(req,res){
             })
         }
     }
+})
+
+// get recent posts
+router.get('/getRecentPosts',authMiddleware,async function(req,res){
+        const userId = req.user
+        const getRecentPosts = `SELECT * from posts  where user_id<>$1 ORDER BY created_at DESC LIMIT 4`
+        const getRecentPostsResponse = await client.query(getRecentPosts,[userId])
+        res.json({
+            recentBlogs:getRecentPostsResponse.rows
+        })
+})
+
+router.get('/getBlogs',authMiddleware,async function(req,res){
+    const {category} = req.query
+    console.log(category)
+    const blogByCategory = await client.query(`SELECT * from posts where category=$1`,[category])
+    res.json({
+        blogs:blogByCategory.rows
+    })
+})
+
+router.get('/search',authMiddleware,async function(req,res){
+    const {authorOrTitle} = req.query
+    const blobByCategory = await client.query( `
+                                                SELECT * 
+                                                FROM posts
+                                                WHERE category = $1 
+                                                OR title = $1
+                                                OR user_id = (SELECT user_id 
+                                                FROM users
+                                                WHERE username = $1);`,[authorOrTitle])  
+    res.json({
+        blogs:blobByCategory.rows
+    })
+})
+
+router.get('/getSingleBlog',async function(req,res){
+    const {blogId}= req.query
+    console.log(blogId)
+    const response = await client.query(`
+     SELECT *,
+     (select username from users where user_id=(select user_id from posts where post_id=$1))
+     from posts where post_id=$1`,[blogId])
+
+    res.json({
+        blog:response.rows[0]
+    })
+})
+
+router.get('/getUserBlogs',authMiddleware,async function(req,res){
+    const userId = req.user
+    const response = await client.query(
+        `
+        SELECT * from posts WHERE user_id=$1
+        `,[userId]
+    )
+    res.json({
+        blogs:response.rows
+    })
+})
+
+router.delete('/deletePost/:postId',authMiddleware,async function(req,res){
+    const postId = req.params.postId;
+    const userId = req.user;
+
+        const post = await client.query(
+            `SELECT * FROM posts WHERE post_id=$1 AND user_id=$2`,
+            [postId, userId]
+        );
+
+        if (post.rows.length === 0) {
+            return res.status(404).json({ message: "Post not found or you don't have permission to delete it." });
+        }
+        const imagePath = path.join(__dirname, '../images/', post.rows[0].image);
+        console.log('image path : '+imagePath)
+        if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+        }
+        // Delete the post
+        await client.query(`
+             DELETE from upvotes WHERE blog_id=$1
+            `,[postId])
+        await client.query(
+            `DELETE FROM posts WHERE post_id=$1`,
+            [postId]
+        );
+
+        res.json({ message: "Post deleted successfully." });
 })
 
 module.exports = router;

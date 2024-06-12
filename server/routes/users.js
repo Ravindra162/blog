@@ -5,7 +5,7 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const { authMiddleware } = require('../middlewares/auth');
 /* GET users listing. */
-router.post('/signup', async function(req, res, next) {
+router.post('/register', async function(req, res, next) {
   const {
     username,
     email,
