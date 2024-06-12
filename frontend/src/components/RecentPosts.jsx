@@ -11,7 +11,7 @@ const RecentPosts = () => {
             window.location.href='/'
         }
         else{
-            axios.get('http://localhost:3000/blog/getRecentPosts',{
+            axios.get('https://blog-l9ra.onrender.com/blog/getRecentPosts',{
                 headers:{
                     Authorization:localStorage.getItem('token')
                 }
@@ -30,7 +30,7 @@ const RecentPosts = () => {
             <div className='h-[94%] w-full flex justify-between items-center'>
                 <div className='hidden md:h-[96%] md:w-[60%] md:flex md:flex-col md:justify-center md:items-center md:gap-5'>
                     <img 
-                    src={recentBlogs.length?`http://localhost:3000/images/${recentBlogs[0]["image"]}`:''}
+                    src={recentBlogs.length?`https://blog-l9ra.onrender.com/images/${recentBlogs[0]["image"]}`:''}
                     className='h-[90%] w-[90%] rounded-2xl' id='recent-post'/>
                     <p className='text-white text-xl'>{recentBlogs.length?recentBlogs[0]["title"]:''}</p>
 
@@ -45,7 +45,7 @@ const RecentPosts = () => {
                             }}
                             key={index}
                             className='h-[25%] w-[90%] flex justify-between items-center cursor-pointer'>
-                            <img src={recentBlogs.length?`http://localhost:3000/images/${elem["image"]}`:''} className='h-full w-1/2 bg-green-50 rounded-2xl'/>
+                            <img src={recentBlogs.length?`https://blog-l9ra.onrender.com/images/${elem["image"]}`:''} className='h-full w-1/2 bg-green-50 rounded-2xl'/>
                             <div className='h-full w-1/2 flex flex-col justify-center ml-10 text-white'>
                                 <p>{elem.created_at.slice(0,10)}</p>
                                 <p>{elem.title}</p>

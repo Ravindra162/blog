@@ -10,7 +10,7 @@ const DisplayBlog = () => {
     const [isLoading,setIsLoading] = useState(true)
     const [blog,setBlog] = useState('')
     useEffect(()=>{
-        axios.get('http://localhost:3000/blog/getSingleBlog?blogId='+blogId.blogId,{
+        axios.get('https://blog-l9ra.onrender.com/blog/getSingleBlog?blogId='+blogId.blogId,{
             headers:{
                 Authorization:localStorage.getItem('token')
             }
@@ -30,7 +30,7 @@ const DisplayBlog = () => {
         <center>
             <div className='flex flex-col justify-center items-center gap-20 overflow-hidden'>
                 <h1 className='text-3xl text-white mt-5'>{blog.title}</h1> 
-                <img className='h-[150px] md:h-[300px] md:w-1/2' src={`http://localhost:3000/images/${blog.image}`}/>
+                <img className='h-[150px] md:h-[300px] md:w-1/2' src={`https://blog-l9ra.onrender.com/images/${blog.image}`}/>
                 <div className='w-2/3 text-white' dangerouslySetInnerHTML={{__html:blog.content}}>
                     {/* Render html here */}
                 </div>
