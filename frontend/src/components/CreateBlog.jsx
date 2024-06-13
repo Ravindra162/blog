@@ -1,32 +1,19 @@
 import React, { useState, useEffect } from 'react';
-// import ReactQuill from 'react-quill';
-// import 'react-quill/dist/quill.snow.css';
-import { useQuill } from 'react-quilljs';
-// or const { useQuill } = require('react-quilljs');
-
-import 'quill/dist/quill.snow.css';
+import Editor from 'react-simple-wysiwyg';
+import UserNavbar from '../components/UserNavbar'
 
 import axios from 'axios';
 
 const CreateBlog = () => {
-    const { quill, quillRef } = useQuill();
     const [user, setUser] = useState()
     const [value,setValue] = useState('')
     const [title,setTitle] = useState('')
     const [category,setCategory] = useState('Technology')
     const [base64, setBase64] = useState('');
+    const [html, setHtml] = useState('');
     const [file,setFile] = useState()
-    useEffect(() => {
-        if (quill) {
-            quill.root.innerHTML = localStorage.getItem('writing')
-          quill.on('text-change', (delta, oldDelta, source) => {
-            console.log(quill.root.innerHTML); // Get innerHTML using quill
-            console.log(quillRef.current.firstChild.innerHTML);
-            localStorage.setItem('writing',quill.root.innerHTML)
- // Get innerHTML using quillRef
-          });
-        }
-      }, [quill]);
+   
+      
      
 
 
@@ -48,7 +35,7 @@ const CreateBlog = () => {
         const formData = new FormData();
     
         formData.append('title',title); // Append title
-        formData.append('description',quill.root.innerHTML); // Append description
+        formData.append('description',html); // Append description
         formData.append('image', file); // Append image file
         formData.append('category',category); // Append category
     
@@ -67,7 +54,8 @@ const CreateBlog = () => {
             .catch(err => alert(err.response.data.message));
     };
     
-    return (
+    return (<>
+    <UserNavbar/>
         <div className='h-screen w-full bg-[black] flex flex-col justify-center items-center'>
             <form className='w-full h-[90%] p-5 flex flex-col justify-center items-center gap-10' method='post' encType='multipart/form-data' onSubmit={uploadPost}>
             <input 
@@ -84,15 +72,20 @@ const CreateBlog = () => {
             name='image'
             type='file' accept='.jpeg,.jpg,.png' onChange={handleFileChange} required/>
             {/* <ReactQuill className='bg-[#ffffffc1]'/> */}
-            <div className='bg-black text-slate-300' style={{ width: 500, height: 300 }}>
+            {/* <div className='bg-black text-slate-300' style={{ width: 500, height: 300 }}>
              <div ref={quillRef} />
-            </div>
+            </div> */}
+            <Editor className='text-white' value={html} onChange={(e)=>{
+                console.log(e.target.value)
+                setHtml(e.target.value)
+            }} />
             <button
             className='relative text-white bg-green-500 h-[40px] w-[70px] z-10 rounded-xl top-10'
             onClick={uploadPost}
             >Post</button>
             </form>
         </div>
+        </>
     );
 };
 
