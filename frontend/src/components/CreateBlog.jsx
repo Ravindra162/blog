@@ -11,7 +11,7 @@ const CreateBlog = () => {
     const [category,setCategory] = useState('Technology')
     const [base64, setBase64] = useState('');
     const [html, setHtml] = useState('');
-    const [file,setFile] = useState()
+    const [file,setFile] = useState('')
    
       
      

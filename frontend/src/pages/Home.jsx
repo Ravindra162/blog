@@ -7,11 +7,11 @@ import Third from '../components/Third'
 import Fourth from '../components/Fourth'
 import Footer from '../components/Footer'
 const Home = () => {
-  // useEffect(()=>{
-  //   if(localStorage.getItem('token')){
-  //     window.location.href='/user'
-  //   }
-  // },[])
+  useEffect(()=>{
+    if(localStorage.getItem('token')){
+      window.location.href='/user'
+    }
+  },[])
   return (
     <div className='h-screen w-full'>
       <Navbar/> 
