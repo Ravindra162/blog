@@ -16,7 +16,7 @@ const Edit = () => {
     const [currentBlog,setCurrentBlog] = useState({})
     const [html,setHtml] = useState('')
     useEffect(() => {
-        axios.get(`https://blog-l9ra.onrender.com/blog/getSingleBlog?blogId=${blog.blogId}`,{
+        axios.get(`http://localhost:3000/blog/getSingleBlog?blogId=${blog.blogId}`,{
             headers:{
                 Authorization:localStorage.getItem('token')
             }
@@ -53,16 +53,16 @@ const Edit = () => {
         formData.append('category',category); // Append category
     
         // Add your post upload logic here
-        axios.put('https://blog-l9ra.onrender.com/blog/update/'+blog.blogId, formData, {
+        axios.put('http://localhost:3000/blog/update/'+blog.blogId, {title,category,html,base64}, {
             headers:{
-                'Authorization':localStorage.getItem('token')
+                'Authorization':localStorage.getItem('token'),
+                'Content-Type':'application/json'
             }
         })
             .then(response => {
                 console.log(response.data.message);
                 alert(response.data.message)
                 localStorage.removeItem('writing')
-                // window.location.href="/"
             })
             .catch(err =>{
                  console.log(err.response.data.message)

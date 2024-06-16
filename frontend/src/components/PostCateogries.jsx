@@ -9,7 +9,7 @@ const PostCateogries = () => {
     ])
     const [blogs,setBlogs] = useState([])
    useEffect(()=>{
-    axios.get(`https://blog-l9ra.onrender.com/blog/getBlogs?category=${category}`,{
+    axios.get(`http://localhost:3000/blog/getBlogs?category=${category}`,{
       headers:{
         'Authorization':localStorage.getItem('token')
       }
@@ -50,7 +50,7 @@ const PostCateogries = () => {
                       navigate(`/user/blog/${elem.post_id}`)
                   }}
                   className='h-[250px] w-full flex flex-col justify-center items-center cursor-pointer'>
-                  <img className='h-[220px] w-[99%] rounded-2xl' src={'https://blog-l9ra.onrender.com/images/'+elem.image}/>
+                  <img className='h-[220px] w-[99%] rounded-2xl' src={elem.image}/>
                   <div className='title text-lg text-white'>
                       {elem.title}
                   </div>

@@ -14,7 +14,7 @@ const UserNavbar = () => {
    useEffect(()=>{
       if(localStorage.getItem('token')){
           setIsLogin(true)
-          axios.get('https://blog-l9ra.onrender.com/users/get',{
+          axios.get('http://localhost:3000/users/get',{
             headers:{
                 Authorization:localStorage.getItem('token')
             }

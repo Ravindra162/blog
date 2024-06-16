@@ -12,7 +12,7 @@ const Profile = () => {
   const [user,setUser] = useState()
 
   useEffect(()=>{
-    axios.get('https://blog-l9ra.onrender.com/users/get',{
+    axios.get('http://localhost:3000/users/get',{
         headers:{
             Authorization:localStorage.getItem('token')
         }
@@ -22,7 +22,7 @@ const Profile = () => {
     })
   },[])
   useEffect(()=>{
-        axios.get('https://blog-l9ra.onrender.com/users/profile',{
+        axios.get('http://localhost:3000/users/profile',{
             headers:{
                 Authorization:localStorage.getItem('token')
             }
@@ -36,7 +36,7 @@ const Profile = () => {
     
   },[selected])
   const deletePost = (blogId) => {
-    axios.delete(`https://blog-l9ra.onrender.com/blog/deletePost/${blogId}`,{
+    axios.delete(`http://localhost:3000/blog/deletePost/${blogId}`,{
         headers:{
             Authorization:localStorage.getItem('token')
         }
@@ -89,7 +89,7 @@ const Profile = () => {
                 return <div
                 key={index}
                 className='h-[190px] w-full my-2 p-5 flex justify-between items-center'>
-                <img className='h-[185px] w-1/2 rounded-xl' src={`https://blog-l9ra.onrender.com/images/${elem.image}`}/>
+                <img className='h-[185px] w-1/2 rounded-xl' src={`/${elem.image}`}/>
                 <div className='w-1/2 h-full m-2 flex flex-col'>
                 <div className='text-lg text-white p-2'>   {elem.title}</div>
                 <div className='h-1/3 w-full  flex justify-center items-center gap-5'>
@@ -109,7 +109,7 @@ const Profile = () => {
                 return <div
                 key={index}
                 className='h-[190px] w-full my-2 p-5 flex justify-between items-center'>
-                <img className='h-[185px] w-1/2 rounded-xl' src={`https://blog-l9ra.onrender.com/images/${elem.image}`}/>
+                <img className='h-[185px] w-1/2 rounded-xl' src={`/${elem.image}`}/>
                 <div className='w-1/2 h-full m-2 flex flex-col'>
                 <div className='text-lg text-white p-2'>   {elem.title}</div>
                 <div className='h-1/3 w-full  flex justify-center items-center gap-5'>

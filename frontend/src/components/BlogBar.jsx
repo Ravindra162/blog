@@ -8,7 +8,7 @@ const BlogBar = ({username}) => {
   const [isLoading,setIsLoading] = useState(true)
   const blog = useParams()
   useEffect(()=>{
-    axios.get('https://blog-l9ra.onrender.com/blog/getUpVotes?blogId='+blog.blogId,{
+    axios.get('http://localhost:3000/blog/getUpVotes?blogId='+blog.blogId,{
       headers:{
         Authorization:localStorage.getItem('token')
       }
@@ -30,7 +30,7 @@ const BlogBar = ({username}) => {
       setIsVoted(false)
     }
     
-    axios.post(`https://blog-l9ra.onrender.com/blog/upvote`,{blogId:blog.blogId},{
+    axios.post(`http://localhost:3000/blog/upvote`,{blogId:blog.blogId},{
       headers:{
         'Authorization':localStorage.getItem('token')
       }

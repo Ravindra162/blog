@@ -40,9 +40,10 @@ const CreateBlog = () => {
         formData.append('category',category); // Append category
     
         // Add your post upload logic here
-        axios.post('https://blog-l9ra.onrender.com/blog/create', formData, {
+        axios.post('http://localhost:3000/blog/create',{title,category,html,base64}, {
             headers:{
-                'Authorization':localStorage.getItem('token')
+                'Authorization':localStorage.getItem('token'),
+                'Content-Type':'application/json'
             }
         })
             .then(response => {

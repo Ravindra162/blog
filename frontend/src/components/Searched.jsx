@@ -18,7 +18,7 @@ const Searched = ({SearchedBlogs}) => {
                             className='h-[200px]  md:h-[290px] w-[90%] md:w-2/3 flex p-4 cursor-pointer'>
                             <img 
                             className='w-1/2 rounded-xl'
-                            src={"https://blog-l9ra.onrender.com/images/"+elem.image} alt="blog" />
+                            src={"/"+elem.image} alt="blog" />
                             <div className='md:text-2xl text-lg text-white p-5'>
                                 {elem.title}
                             </div>
