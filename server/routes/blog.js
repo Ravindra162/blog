@@ -35,19 +35,17 @@ router.get('/get', authMiddleware, async (req, res) => {
 });
 
 // Define the route to handle the file upload
-router.post('/create',authMiddleware, upload.single('image'), async function (req, res, next) {
-    
-    const image = req.file.filename;
-    const title = req.body.title;
-    const description = req.body.description;
+router.post('/create',authMiddleware, async function (req, res, next) {
+    console.log(req.body)
+    const {base64,title,html,category} = req.body;
     const user_id = req.user;
-    const category = req.body.category
-    console.log(req.file)
-    console.log(image)
-    console.log(title)
-    console.log(description)
-    console.log(user_id)
-    console.log(category)
+    // const category = req.body.category
+    // console.log(req.file)
+    // console.log(image)
+    // console.log(title)
+    // console.log(description)
+    // console.log(user_id)
+    // console.log(category)
     // CURRENT_TIMESTAMP
 
     const createPost = `
@@ -55,7 +53,7 @@ router.post('/create',authMiddleware, upload.single('image'), async function (re
             VALUES ($1,$2,$3,$4,$5)
             RETURNING post_id;
     `
-    const uploadedResult = await client.query(createPost,[title,description,user_id,image,category])
+    const uploadedResult = await client.query(createPost,[title,html,user_id,base64,category])
     console.log(uploadedResult.rows)
     const insertIntoUpvote = `
     INSERT INTO upvotes (user_id,blog_id) values ($1,$2) returning *
@@ -75,12 +73,11 @@ router.post('/create',authMiddleware, upload.single('image'), async function (re
 router.put('/update/:blogId',authMiddleware,upload.single('image'),async(req,res)=>{
     const blogId = req.query.blogId
     const userId = req.user
-    const image = req.file.filename;
+    const image = req.body.base64;
     const title = req.body.title;
-    const description = req.body.description;
+    const description = req.body.html;
     const user_id = req.user;
     const category = req.body.category
-    console.log(req.file)
     console.log(blogId)
     console.log(image)
     console.log(title)
